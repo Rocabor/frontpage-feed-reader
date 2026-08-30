@@ -1,0 +1,6 @@
+{
+  "name": "Frontpage Feed Reader",
+  "description": "A customizable tech content aggregator and RSS/Atom feed reader dashboard with live feed fetching, categorization, bookmarking, and OPML import/export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
