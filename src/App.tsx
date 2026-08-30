@@ -62,9 +62,13 @@ export function App() {
     const root = document.documentElement;
     if (isDark) {
       root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
       localStorage.setItem('frontpage_theme', 'dark');
     } else {
       root.classList.remove('dark');
+      root.classList.add('light');
+      root.setAttribute('data-theme', 'light');
       localStorage.setItem('frontpage_theme', 'light');
     }
   }, [isDark]);
