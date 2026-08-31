@@ -412,11 +412,13 @@ export function App() {
         {/* Mobile Sidebar Overlay Drawer */}
         {isMobileSidebarOpen && (
           <div
-            className="fixed inset-0 z-50 flex bg-black/60 backdrop-blur-xs transition-opacity lg:hidden animate-in fade-in duration-200"
+            id="mobile-drawer-backdrop"
+            className="fixed inset-0 z-50 flex bg-black/60 backdrop-blur-xs transition-opacity lg:hidden"
             onClick={() => setIsMobileSidebarOpen(false)}
           >
             <div
-              className="h-full w-[17.5rem] max-w-[85vw] bg-[var(--color-surface)] shadow-2xl animate-in slide-in-from-left duration-250 ease-out"
+              id="mobile-drawer-content"
+              className="h-full w-[18rem] max-w-[85vw] bg-[var(--color-bg-secondary)] shadow-2xl transition-transform"
               onClick={(e) => e.stopPropagation()}
             >
               <Sidebar
@@ -427,8 +429,8 @@ export function App() {
                 currentFilter={currentFilter}
                 unreadCount={totalUnreadCount}
                 bookmarkCount={bookmarks.length}
-                layout={layoutMode}
-                onLayoutChange={(l) => setLayoutMode(l)}
+                layout={preferences.layout}
+                onLayoutChange={(l) => setPreferences((p) => ({ ...p, layout: l }))}
                 onOpenOpml={() => setIsOpmlOpen(true)}
                 onCloseMobile={() => setIsMobileSidebarOpen(false)}
                 onSelectFilter={(f) => {
