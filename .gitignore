@@ -48,5 +48,8 @@ pnpm-debug.log*
 # Test
 coverage/
 
+# Lighthouse audit outputs
+.lighthouse/
+
 # Misc
 *.tsbuildinfo
