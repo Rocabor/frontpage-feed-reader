@@ -172,17 +172,20 @@ Initially planned a standard client-side reader using third-party CORS proxies (
 git clone https://github.com/Rocabor/frontpage-feed-reader.git
 cd frontpage-feed-reader
 
-# Install dependencies
-npm install
+# Install dependencies (pnpm >= 10 recommended)
+pnpm install
 
 # Run full-stack dev server (Vite + Express backend proxy)
-npm run dev
+pnpm run dev
+
+# Type-check the codebase
+pnpm run typecheck
 
 # Build for production
-npm run build
+pnpm run build
 
 # Start production server
-npm start
+pnpm start
 ```
 
 ---
