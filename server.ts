@@ -1,6 +1,8 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
+import dns from 'dns';
+import net from 'net';
 import Parser from 'rss-parser';
 import { XMLParser } from 'fast-xml-parser';
 import { JSDOM } from 'jsdom';
@@ -68,6 +70,88 @@ function sanitizeHtml(html?: string): string {
   });
 }
 
+// isPrivateAddress: returns true when an IP should never be fetched server-side
+// (protects against SSRF toward internal services, cloud metadata, etc.).
+function isPrivateAddress(ip: string): boolean {
+  // Normalize IPv4-mapped IPv6 (e.g. ::ffff:127.0.0.1 -> 127.0.0.1)
+  const plain = ip.toLowerCase();
+  const ipv4Mapped = plain.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
+  const addr = ipv4Mapped ? ipv4Mapped[1] : plain;
+
+  if (net.isIP(addr) === 4) {
+    const bytes = addr.split('.').map(Number);
+    const [a, b] = bytes;
+    return (
+      a === 0 || // 0.0.0.0/8 current network
+      a === 10 || // 10.0.0.0/8 private
+      a === 100 || (a === 100 && b >= 64 && b <= 127) || // 100.64.0.0/10 CGNAT
+      a === 127 || // 127.0.0.0/8 loopback
+      a === 169 && b === 254 || // 169.254.0.0/16 link-local (incl. cloud metadata)
+      a === 172 && b >= 16 && b <= 31 || // 172.16.0.0/12 private
+      a === 192 && b === 0 || // 192.0.0.0/24 (incl. 192.0.0.9/10, 192.0.0.170/171 IETF)
+      a === 192 && b === 168 || // 192.168.0.0/16 private
+      a === 192 && b === 0 && bytes[2] === 2 || // 192.0.2.0/24 TEST-NET-1
+      a === 198 && (b === 18 || b === 19) || // 198.18.0.0/15 benchmarking
+      a === 198 && b === 51 && bytes[2] === 100 || // 198.51.100.0/24 TEST-NET-2
+      a === 203 && b === 0 && bytes[2] === 113 || // 203.0.113.0/24 TEST-NET-3
+      a >= 224 // 224.0.0.0/4 multicast + 240.0.0.0/4 reserved + broadcast
+    );
+  }
+
+  if (net.isIP(addr) === 6) {
+    const lower = addr.toLowerCase();
+    // Strip IPv4-mapped / IPv4-translated suffix already handled above
+    return (
+      lower === '::' || // unspecified
+      lower === '::1' || // IPv6 loopback
+      /^fc/i.test(lower) || lower.startsWith('fd') || // fc00::/7 ULA
+      /^fe8/i.test(lower) || lower.startsWith('fe9') ||
+      lower.startsWith('fea') || lower.startsWith('feb') || // fe80::/10 link-local
+      /^ff/i.test(lower) || // ff00::/8 multicast
+      lower === '::ffff:0:0' || // IPv4-mapped unspecified
+      lower.startsWith('64:ff9b:') || // IPv4-IPv6 translation (NAT64 well-known)
+      lower.startsWith('100::') // discard-only /6
+    );
+  }
+
+  return false;
+}
+
+// assertSafeFeedUrl validates that feedUrl can be fetched server-side without
+// enabling SSRF. Throws with a user-facing message when the target is unsafe.
+async function assertSafeFeedUrl(feedUrl: string): Promise<void> {
+  let parsed: URL;
+  try {
+    parsed = new URL(feedUrl);
+  } catch {
+    throw new Error('Invalid feed URL');
+  }
+
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error('Only http and https feed URLs are allowed');
+  }
+
+  const hostname = parsed.hostname;
+  if (!hostname) throw new Error('Invalid feed URL host');
+
+  // Resolve every address the hostname maps to (IPv4 + IPv6) and reject if any
+  // is non-public. This prevents DNS rebinding / multi-A-record SSRF.
+  const addresses = await dns.promises
+    .lookup(hostname, { all: true, verbatim: true })
+    .then((result) => result.map((r) => r.address))
+    .catch(() => []);
+
+  if (addresses.length === 0) {
+    throw new Error('Feed host could not be resolved');
+  }
+
+  for (const address of addresses) {
+    if (isPrivateAddress(address)) {
+      throw new Error('Feed URL points to a non-public address');
+    }
+  }
+}
+
 export function createApp() {
   const app = express();
 
@@ -115,12 +199,20 @@ export function createApp() {
       return res.status(400).json({ error: 'Missing "url" query parameter' });
     }
 
+    let safeFeedUrl: string;
+    try {
+      await assertSafeFeedUrl(feedUrl);
+      safeFeedUrl = feedUrl;
+    } catch (err: any) {
+      return res.status(400).json({ error: err.message || 'Feed URL rejected' });
+    }
+
     try {
       // Fetch feed via standard fetch with timeout
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 9000);
 
-      const response = await fetch(feedUrl, {
+      const response = await fetch(safeFeedUrl, {
         signal: controller.signal,
         headers: {
           'User-Agent': 'Frontpage-FeedReader/1.0 (RSS Aggregator)',
