@@ -192,8 +192,8 @@ export function App() {
 
   // Fetch live articles for feeds
   const refreshSingleFeed = useCallback(
-    async (feedId: string) => {
-      const feed = feeds.find((f) => f.id === feedId);
+    async (feedId: string, overrideFeed?: FeedSource) => {
+      const feed = overrideFeed || feeds.find((f) => f.id === feedId);
       if (!feed) return;
 
       try {
@@ -270,7 +270,7 @@ export function App() {
 
   const handleAddFeed = (newFeed: FeedSource) => {
     setFeeds((prev) => [newFeed, ...prev]);
-    refreshSingleFeed(newFeed.id);
+    refreshSingleFeed(newFeed.id, newFeed);
     setSelectedCategory(newFeed.category);
     setSelectedFeedId(newFeed.id);
     setCurrentFilter('all');
@@ -300,7 +300,7 @@ export function App() {
     });
     // Trigger refresh for newly imported feeds
     setTimeout(() => {
-      newFeeds.slice(0, 5).forEach((f) => refreshSingleFeed(f.id));
+      newFeeds.slice(0, 5).forEach((f) => refreshSingleFeed(f.id, f));
     }, 500);
   };
 
