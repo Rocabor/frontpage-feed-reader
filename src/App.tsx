@@ -229,9 +229,8 @@ export function App() {
 
   const refreshAllFeeds = useCallback(async () => {
     setIsRefreshing(true);
-    // Refresh first 6 feeds concurrently to avoid overwhelming network
-    const targets = feeds.slice(0, 8);
-    await Promise.allSettled(targets.map((f) => refreshSingleFeed(f.id)));
+    // Refresh every feed concurrently; Promise.allSettled tolerates individual failures
+    await Promise.allSettled(feeds.map((f) => refreshSingleFeed(f.id)));
     setIsRefreshing(false);
   }, [feeds, refreshSingleFeed]);
 
