@@ -47,6 +47,9 @@ export function App() {
   const [isManageFeedsOpen, setIsManageFeedsOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(
+    () => loadCachedArticles().length === 0 && loadSavedFeeds().length > 0
+  );
 
   // Theme Management
   const [isDark, setIsDark] = useState<boolean>(() => {
@@ -236,12 +239,11 @@ export function App() {
 
   // Trigger background refresh on mount
   useEffect(() => {
-    // Refresh first 4 feeds on initial mount
+    // Refresh first 4 feeds on initial mount, then reveal content
     const initialSync = async () => {
       const priorityFeeds = feeds.slice(0, 4);
-      for (const feed of priorityFeeds) {
-        refreshSingleFeed(feed.id).catch(() => {});
-      }
+      await Promise.allSettled(priorityFeeds.map((f) => refreshSingleFeed(f.id)));
+      setIsInitialLoading(false);
     };
     initialSync();
   }, []);
@@ -484,6 +486,7 @@ export function App() {
             selectedCategory={selectedCategory}
             selectedFeedTitle={selectedFeed?.title || null}
             searchQuery={searchQuery}
+            isLoading={isInitialLoading}
             onSelectArticle={(art) => {
               setSelectedArticle(art);
               if (!art.isRead) handleToggleRead(art.id);

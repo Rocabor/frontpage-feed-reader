@@ -21,6 +21,7 @@ interface FeedViewProps {
   selectedCategory: string | null;
   selectedFeedTitle: string | null;
   searchQuery: string;
+  isLoading: boolean;
   onSelectArticle: (article: Article) => void;
   onToggleRead: (articleId: string, e: React.MouseEvent) => void;
   onToggleBookmark: (articleId: string, e: React.MouseEvent) => void;
@@ -29,6 +30,22 @@ interface FeedViewProps {
   onToggleSortOrder: () => void;
 }
 
+const SkeletonCard: React.FC = () => (
+  <div className="flex min-h-[280px] flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-xs">
+    <div className="h-40 w-full animate-pulse bg-[var(--color-bg-tertiary)]" />
+    <div className="flex flex-1 flex-col p-4">
+      <div className="h-3 w-24 animate-pulse rounded bg-[var(--color-bg-tertiary)]" />
+      <div className="mt-3 h-4 w-full animate-pulse rounded bg-[var(--color-bg-tertiary)]" />
+      <div className="mt-2 h-4 w-3/4 animate-pulse rounded bg-[var(--color-bg-tertiary)]" />
+      <div className="mt-4 h-3 w-full animate-pulse rounded bg-[var(--color-bg-tertiary)]" />
+      <div className="mt-2 h-3 w-5/6 animate-pulse rounded bg-[var(--color-bg-tertiary)]" />
+      <div className="mt-auto pt-4">
+        <div className="h-3 w-28 animate-pulse rounded bg-[var(--color-bg-tertiary)]" />
+      </div>
+    </div>
+  </div>
+);
+
 export const FeedView: React.FC<FeedViewProps> = ({
   articles,
   layout,
@@ -36,6 +53,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
   selectedCategory,
   selectedFeedTitle,
   searchQuery,
+  isLoading,
   onSelectArticle,
   onToggleRead,
   onToggleBookmark,
@@ -99,7 +117,14 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
       {/* Main Content Area */}
       <div className="flex-1 p-6">
-        {articles.length === 0 ? (
+        {isLoading && articles.length === 0 ? (
+          /* Loading Skeleton (reserves space to avoid layout shift) */
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : articles.length === 0 ? (
           /* Empty State */
           <div className="flex min-h-[300px] flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] p-8 text-center bg-[var(--color-bg-secondary)]/30">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)]">
@@ -139,9 +164,12 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       src={article.coverImage}
                       alt=""
                       referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
+                      width={400}
+                      height={160}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
-                        // Hide broken image
                         (e.target as HTMLElement).style.display = 'none';
                       }}
                     />
@@ -300,11 +328,15 @@ export const FeedView: React.FC<FeedViewProps> = ({
               >
                 {/* Image on Magazine View */}
                 {article.coverImage ? (
-                  <div className="h-48 w-full shrink-0 overflow-hidden rounded-xl bg-[var(--color-bg-tertiary)] md:h-auto md:w-64">
+                  <div className="h-48 w-full shrink-0 overflow-hidden rounded-xl bg-[var(--color-bg-tertiary)] md:h-48 md:w-64">
                     <img
                       src={article.coverImage}
                       alt=""
                       referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
+                      width={256}
+                      height={192}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = 'none';
