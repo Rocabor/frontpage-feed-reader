@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "../starter/tokens.css";
 
+/* Tell Tailwind v4 (CLI, build tooling and the language server) which files to
+   scan for class names, so custom utilities aren't flagged as unknown.
+   Paths are resolved relative to this file (src/). */
+@source "./**/*.{ts,tsx}";
+@source "../index.html";
+
 @theme inline {
   --color-bg-primary: var(--color-bg-primary);
   --color-bg-secondary: var(--color-bg-secondary);
