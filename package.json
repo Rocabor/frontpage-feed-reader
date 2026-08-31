@@ -9,6 +9,8 @@
     "start": "node dist/server.cjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "express": "^4.21.2",
     "fast-xml-parser": "^4.5.3",
     "lucide-react": "^1.16.0",
