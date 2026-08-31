@@ -11,10 +11,14 @@ import {
   Folder,
   Rss,
   RotateCcw,
-  CheckCircle2,
   AlertCircle,
+  X,
+  LayoutGrid,
+  List,
+  BookOpen,
+  FileCode,
 } from 'lucide-react';
-import { FeedSource, FilterView } from '../types';
+import { FeedSource, FilterView, LayoutMode } from '../types';
 
 interface SidebarProps {
   feeds: FeedSource[];
@@ -32,6 +36,10 @@ interface SidebarProps {
   onResetSampleFeeds: () => void;
   feedUnreadCounts: Record<string, number>;
   categoryUnreadCounts: Record<string, number>;
+  onCloseMobile?: () => void;
+  layout?: LayoutMode;
+  onLayoutChange?: (layout: LayoutMode) => void;
+  onOpenOpml?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -50,6 +58,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onResetSampleFeeds,
   feedUnreadCounts,
   categoryUnreadCounts,
+  onCloseMobile,
+  layout,
+  onLayoutChange,
+  onOpenOpml,
 }) => {
   // Track open/collapsed state of each category
   const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
@@ -65,8 +77,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside
       id="app-sidebar"
-      className="flex h-full w-[16.25rem] flex-col border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)]/50 transition-colors"
+      className="flex h-full w-full lg:w-[16.25rem] flex-col border-r border-[var(--color-border)] bg-[var(--color-bg-secondary)]/95 lg:bg-[var(--color-bg-secondary)]/50 transition-colors"
     >
+      {/* Mobile Drawer Header */}
+      {onCloseMobile && (
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-[var(--color-border)] px-4 lg:hidden">
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-accent)] text-white shadow-xs">
+              <Rss className="h-3.5 w-3.5" />
+            </div>
+            <span className="font-semibold text-sm text-[var(--color-text-primary)]">Navigation</span>
+          </div>
+          <button
+            onClick={onCloseMobile}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
+            aria-label="Close menu"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* Primary Navigation Views */}
       <div className="p-3">
         <nav className="space-y-1">
@@ -77,6 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onSelectFilter('all');
               onSelectCategory(null);
               onSelectFeed(null);
+              onCloseMobile?.();
             }}
             className={`flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
               currentFilter === 'all' && !selectedCategory && !selectedFeedId
@@ -102,6 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onSelectFilter('unread');
               onSelectCategory(null);
               onSelectFeed(null);
+              onCloseMobile?.();
             }}
             className={`flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
               currentFilter === 'unread'
@@ -127,6 +160,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onSelectFilter('bookmarks');
               onSelectCategory(null);
               onSelectFeed(null);
+              onCloseMobile?.();
             }}
             className={`flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
               currentFilter === 'bookmarks'
@@ -152,6 +186,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onSelectFilter('digest');
               onSelectCategory(null);
               onSelectFeed(null);
+              onCloseMobile?.();
             }}
             className={`flex w-full items-center justify-between rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
               currentFilter === 'digest'
@@ -170,6 +205,63 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
       </div>
 
+      {/* Mobile Drawer Layout Mode Switcher & OPML (Visible on mobile/tablet drawer) */}
+      {layout && onLayoutChange && (
+        <div className="mx-3 my-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-primary)]/70 p-2.5 md:hidden">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-tertiary)]">
+            Article Layout
+          </div>
+          <div className="grid grid-cols-3 gap-1.5">
+            <button
+              onClick={() => onLayoutChange('cards')}
+              className={`flex items-center justify-center gap-1 rounded py-1.5 text-xs font-medium transition-colors ${
+                layout === 'cards'
+                  ? 'bg-[var(--color-accent)] text-white shadow-xs'
+                  : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]'
+              }`}
+            >
+              <LayoutGrid className="h-3 w-3" />
+              <span>Cards</span>
+            </button>
+            <button
+              onClick={() => onLayoutChange('compact')}
+              className={`flex items-center justify-center gap-1 rounded py-1.5 text-xs font-medium transition-colors ${
+                layout === 'compact'
+                  ? 'bg-[var(--color-accent)] text-white shadow-xs'
+                  : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]'
+              }`}
+            >
+              <List className="h-3 w-3" />
+              <span>List</span>
+            </button>
+            <button
+              onClick={() => onLayoutChange('magazine')}
+              className={`flex items-center justify-center gap-1 rounded py-1.5 text-xs font-medium transition-colors ${
+                layout === 'magazine'
+                  ? 'bg-[var(--color-accent)] text-white shadow-xs'
+                  : 'bg-[var(--color-bg-secondary)] text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)]'
+              }`}
+            >
+              <BookOpen className="h-3 w-3" />
+              <span>Mag</span>
+            </button>
+          </div>
+
+          {onOpenOpml && (
+            <button
+              onClick={() => {
+                onOpenOpml();
+                onCloseMobile?.();
+              }}
+              className="mt-2 flex w-full items-center justify-center gap-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-secondary)] py-1.5 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+            >
+              <FileCode className="h-3.5 w-3.5" />
+              <span>Import / Export OPML</span>
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="mx-3 border-t border-[var(--color-border)]" />
 
       {/* Categories & Feeds Section */}
@@ -181,7 +273,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             id="sidebar-add-feed-btn"
             title="Add Feed"
-            onClick={onOpenAddFeed}
+            onClick={() => {
+              onOpenAddFeed();
+              onCloseMobile?.();
+            }}
             className="flex h-5 w-5 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
           >
             <Plus className="h-3 w-3" />
@@ -204,6 +299,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onSelectFilter('all');
                     onSelectCategory(category);
                     onSelectFeed(null);
+                    onCloseMobile?.();
                   }}
                   className={`group flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-xs font-medium transition-colors ${
                     isCatSelected
@@ -250,6 +346,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             onSelectFilter('all');
                             onSelectCategory(category);
                             onSelectFeed(feed.id);
+                            onCloseMobile?.();
                           }}
                           className={`flex w-full items-center justify-between rounded px-2 py-1 text-left text-xs transition-colors ${
                             isFeedSelected
@@ -292,7 +389,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="border-t border-[var(--color-border)] p-3 space-y-1.5 bg-[var(--color-bg-primary)]/40">
         <button
           id="manage-feeds-sidebar-btn"
-          onClick={onOpenManageFeeds}
+          onClick={() => {
+            onOpenManageFeeds();
+            onCloseMobile?.();
+          }}
           className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
         >
           <Settings className="h-3.5 w-3.5" />
@@ -301,7 +401,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         <button
           id="reset-sample-feeds-btn"
-          onClick={onResetSampleFeeds}
+          onClick={() => {
+            onResetSampleFeeds();
+            onCloseMobile?.();
+          }}
           title="Reset to the 19 curated sample feeds"
           className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-[var(--color-text-tertiary)] transition-colors hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]"
         >

@@ -409,14 +409,14 @@ export function App() {
           />
         </div>
 
-        {/* Mobile Sidebar Overlay */}
+        {/* Mobile Sidebar Overlay Drawer */}
         {isMobileSidebarOpen && (
           <div
-            className="fixed inset-0 z-40 flex bg-black/50 lg:hidden"
+            className="fixed inset-0 z-50 flex bg-black/60 backdrop-blur-xs transition-opacity lg:hidden animate-in fade-in duration-200"
             onClick={() => setIsMobileSidebarOpen(false)}
           >
             <div
-              className="h-full w-[16.25rem] bg-[var(--color-surface)] shadow-2xl"
+              className="h-full w-[17.5rem] max-w-[85vw] bg-[var(--color-surface)] shadow-2xl animate-in slide-in-from-left duration-250 ease-out"
               onClick={(e) => e.stopPropagation()}
             >
               <Sidebar
@@ -427,6 +427,10 @@ export function App() {
                 currentFilter={currentFilter}
                 unreadCount={totalUnreadCount}
                 bookmarkCount={bookmarks.length}
+                layout={layoutMode}
+                onLayoutChange={(l) => setLayoutMode(l)}
+                onOpenOpml={() => setIsOpmlOpen(true)}
+                onCloseMobile={() => setIsMobileSidebarOpen(false)}
                 onSelectFilter={(f) => {
                   setCurrentFilter(f);
                   setSelectedCategory(null);
