@@ -12,6 +12,7 @@ import {
   Filter,
 } from 'lucide-react';
 import { Article, LayoutMode, FilterView } from '../types';
+import { Footer } from './Footer';
 
 interface FeedViewProps {
   articles: Article[];
@@ -375,6 +376,8 @@ export const FeedView: React.FC<FeedViewProps> = ({
           </div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 };

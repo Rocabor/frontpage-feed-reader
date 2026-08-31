@@ -10,6 +10,7 @@ import {
   FileCode,
   Zap,
 } from 'lucide-react';
+import { Footer } from './Footer';
 
 interface LandingPageProps {
   onEnterGuestMode: () => void;
@@ -110,9 +111,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterGuestMode, feed
       </main>
 
       {/* Landing Footer */}
-      <footer className="border-t border-[var(--color-border)] px-6 py-6 text-center text-xs text-[var(--color-text-tertiary)]">
-        Frontpage Feed Reader — Built with React, TypeScript, and Express.
-      </footer>
+      <Footer />
     </div>
   );
 };
