@@ -95,7 +95,9 @@ export const ManageFeedsModal: React.FC<ManageFeedsModalProps> = ({
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-2.5">
                     {feed.error ? (
-                      <AlertCircle className="h-4 w-4 shrink-0 text-red-500" title={feed.error} />
+                      <span title={feed.error} className="flex shrink-0 items-center">
+                        <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
+                      </span>
                     ) : (
                       <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--color-success)]" />
                     )}

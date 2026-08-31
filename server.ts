@@ -4,6 +4,8 @@ import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import Parser from 'rss-parser';
 import { XMLParser } from 'fast-xml-parser';
+import { JSDOM } from 'jsdom';
+import createDOMPurify from 'dompurify';
 
 interface CustomFeedItem {
   title?: string;
@@ -57,9 +59,19 @@ function stripHtml(html?: string): string {
     .trim();
 }
 
+const purify = createDOMPurify(new JSDOM('').window);
+
+function sanitizeHtml(html?: string): string {
+  if (!html) return '';
+  // Remove dangerous tags and attributes (script, event handlers, javascript: URIs, etc.)
+  return purify.sanitize(html, {
+    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel|ftp):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+  });
+}
+
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   app.use(express.json({ limit: '10mb' }));
 
@@ -163,7 +175,8 @@ async function startServer() {
 
       const items = (parsedFeed.items || []).slice(0, 30).map((item: any, index: number) => {
         const rawContent = item.contentEncoded || item.content || item.summary || item.description || '';
-        const snippet = item.contentSnippet || stripHtml(rawContent).slice(0, 300);
+        const sanitizedContent = sanitizeHtml(rawContent);
+        const snippet = item.contentSnippet || stripHtml(sanitizedContent).slice(0, 300);
         const image =
           item.enclosure?.url ||
           item.mediaContent?.$?.url ||
@@ -183,7 +196,7 @@ async function startServer() {
           pubDate: pubDateStr,
           timestamp,
           author: item.creator || item.author || '',
-          content: rawContent,
+          content: sanitizedContent,
           contentSnippet: snippet,
           coverImage: image,
           readTimeMinutes: Math.max(1, Math.ceil(snippet.split(' ').length / 180)),
