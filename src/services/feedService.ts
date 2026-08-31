@@ -151,7 +151,7 @@ export function loadBookmarks(): string[] {
   } catch (e) {
     console.error('Failed to load bookmarks', e);
   }
-  return ['art-2', 'art-5'];
+  return [];
 }
 
 export function saveBookmarks(bookmarks: string[]): void {
@@ -169,7 +169,7 @@ export function loadReadArticles(): string[] {
   } catch (e) {
     console.error('Failed to load read articles', e);
   }
-  return ['art-4'];
+  return [];
 }
 
 export function saveReadArticles(readIds: string[]): void {

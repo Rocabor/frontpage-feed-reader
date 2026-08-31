@@ -94,11 +94,20 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
 
     const finalTitle = title.trim() || previewData?.title || 'New Subscription';
 
+    const trimmedUrl = feedUrl.trim();
+    let siteUrl = '';
+    try {
+      const parsed = new URL(trimmedUrl);
+      siteUrl = `${parsed.protocol}//${parsed.host}${parsed.pathname.endsWith('/') ? '' : '/'}`;
+    } catch {
+      siteUrl = trimmedUrl;
+    }
+
     const newFeed: FeedSource = {
       id: `feed-${Math.random().toString(36).substring(2, 9)}`,
       title: finalTitle,
-      feedUrl: feedUrl.trim(),
-      siteUrl: feedUrl.trim(),
+      feedUrl: trimmedUrl,
+      siteUrl,
       description: previewData?.description || '',
       category: finalCategory,
       lastFetched: Date.now(),
