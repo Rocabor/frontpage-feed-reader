@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
-import { createServer as createViteServer } from 'vite';
 import Parser from 'rss-parser';
 import { XMLParser } from 'fast-xml-parser';
 import { JSDOM } from 'jsdom';
@@ -69,9 +68,8 @@ function sanitizeHtml(html?: string): string {
   });
 }
 
-async function startServer() {
+export function createApp() {
   const app = express();
-  const PORT = Number(process.env.PORT) || 3000;
 
   app.use(express.json({ limit: '10mb' }));
 
@@ -218,24 +216,19 @@ async function startServer() {
     }
   });
 
-  // Vite middleware in dev or static files in production
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
-  }
+  return app;
+}
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Frontpage Feed Reader running on http://0.0.0.0:${PORT}`);
+export function serveFrontend(app: express.Express): void {
+  const distPath = path.join(process.cwd(), 'dist');
+  app.use(express.static(distPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
   });
 }
 
-startServer();
+// Export the Express app for Vercel serverless (api/index.ts)
+export const app = createApp();
+
+export default app;
+

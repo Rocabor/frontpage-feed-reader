@@ -22,7 +22,7 @@ Frontpage is a full-stack RSS & Atom feed reader designed for modern web develop
 | **Feed Parsers** | `rss-parser` + `fast-xml-parser` | Resilient dual-layer XML parsing handling RSS 2.0, Atom, and RDF feeds |
 | **Icons & Micro-Interactions** | Lucide React + Motion | Polished icons and layout transition states |
 | **Persistence** | Browser LocalStorage + Server Caching | Zero-friction Guest Mode with persistent unread/bookmark tracking |
-| **Hosting & Runtime** | Google Cloud Run (Containerized) | Containerized full-stack deployment on Node runtime |
+| **Hosting & Runtime** | Vercel (Serverless Functions) | Express API as a Vercel Serverless Function + Vite static hosting |
 
 ---
 
@@ -151,7 +151,7 @@ Initially planned a standard client-side reader using third-party CORS proxies (
 
 | Category | Rating | Notes |
 |----------|:------:|-------|
-| **Works for real users** | 5/5 | Fully deployed on Google Cloud Run with instant live feed fetching |
+| **Works for real users** | 5/5 | Fully deployed on Vercel with instant live feed fetching |
 | **Feed parsing robustness** | 5/5 | Dual parser handling RSS 0.9x/2.0, Atom 1.0, and media enclosures |
 | **Design-it-yourself features** | 5/5 | Custom Onboarding/Landing, Daily Digest, and 3-mode Layout Switcher |
 | **Design quality** | 5/5 | High-contrast typography, warm neutrals, and subtle accents |
@@ -187,6 +187,8 @@ pnpm run build
 # Start production server
 pnpm start
 ```
+
+**Deployment:** Deployed on Vercel. The Express proxy API runs as a Serverless Function (`api/index.ts`, routed via `vercel.json`), and the Vite build output (`dist/`) is served by Vercel's static hosting.
 
 ---
 
