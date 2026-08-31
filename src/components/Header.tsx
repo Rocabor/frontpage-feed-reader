@@ -79,6 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
               ref={mobileInputRef}
               id="mobile-search-input"
               type="text"
+              aria-label="Search articles and feeds"
               placeholder="Search articles & feeds..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
@@ -110,10 +111,13 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            <div
+            <button
               id="brand-logo-button"
+              type="button"
               onClick={onShowLanding}
-              className="flex cursor-pointer items-center gap-2 transition-opacity hover:opacity-85"
+              aria-label="Frontpage — go to home"
+              title="Go to home"
+              className="flex cursor-pointer items-center gap-2 text-left transition-opacity hover:opacity-85"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--color-accent)] text-white shadow-xs">
                 <Rss className="h-4 w-4" />
@@ -128,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
                 </div>
               </div>
-            </div>
+            </button>
           </div>
 
           {/* Center: Desktop/Tablet Search Bar */}
@@ -138,6 +142,7 @@ export const Header: React.FC<HeaderProps> = ({
               <input
                 id="search-input"
                 type="text"
+                aria-label="Search articles, feeds, or topics"
                 placeholder="Search articles, feeds, topics... (Press '/' to focus)"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}

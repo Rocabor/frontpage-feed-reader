@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Plus, AlertCircle, CheckCircle2, Loader2, Sparkles, Globe } from 'lucide-react';
 import { FeedSource } from '../types';
 import { fetchLiveFeed } from '../services/feedService';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 
 interface AddFeedModalProps {
   isOpen: boolean;
@@ -53,6 +54,8 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
   } | null>(null);
 
   if (!isOpen) return null;
+
+  const dialogRef = useDialogFocus(isOpen, onClose);
 
   const handleValidateUrl = async (urlToTest?: string) => {
     const url = (urlToTest || feedUrl).trim();
@@ -123,6 +126,11 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-feed-modal-title"
+        tabIndex={-1}
         className="relative w-full max-w-lg rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-2xl transition-all"
         onClick={(e) => e.stopPropagation()}
       >
@@ -133,7 +141,7 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
               <Plus className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-[var(--color-text-primary)]">
+              <h2 id="add-feed-modal-title" className="text-base font-semibold text-[var(--color-text-primary)]">
                 Add RSS / Atom Feed
               </h2>
               <p className="text-xs text-[var(--color-text-secondary)]">
@@ -143,6 +151,7 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close Add Feed dialog"
             className="rounded-md p-1.5 text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
           >
             <X className="h-4 w-4" />
@@ -153,13 +162,14 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           {/* Feed URL */}
           <div>
-            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+            <label htmlFor="feed-url" className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
               Feed or Website URL
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-tertiary)]" />
                 <input
+                  id="feed-url"
                   type="url"
                   placeholder="https://example.com/rss.xml"
                   value={feedUrl}
@@ -190,14 +200,14 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
 
             {/* Validation Feedback */}
             {validationError && (
-              <div className="mt-2 flex items-start gap-1.5 text-xs text-red-500">
+              <div role="alert" className="mt-2 flex items-start gap-1.5 text-xs text-red-500">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                 <span>{validationError}</span>
               </div>
             )}
 
             {previewData && (
-              <div className="mt-2 flex items-center gap-1.5 rounded-md bg-[var(--color-accent-subtle)] p-2 text-xs text-[var(--color-accent)]">
+              <div role="status" className="mt-2 flex items-center gap-1.5 rounded-md bg-[var(--color-accent-subtle)] p-2 text-xs text-[var(--color-accent)]">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--color-success)]" />
                 <div>
                   <span className="font-semibold">{previewData.title}</span> — Found{' '}
@@ -209,10 +219,11 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
 
           {/* Title Override */}
           <div>
-            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+            <label htmlFor="feed-title" className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
               Feed Title (Optional)
             </label>
             <input
+              id="feed-title"
               type="text"
               placeholder={previewData?.title || 'e.g. My Favorite Tech Blog'}
               value={title}
@@ -224,7 +235,7 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
           {/* Category Selection */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-medium text-[var(--color-text-primary)]">
+              <label htmlFor="feed-category" className="block text-xs font-medium text-[var(--color-text-primary)]">
                 Category
               </label>
               <button
@@ -240,6 +251,7 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
               <input
                 type="text"
                 placeholder="Enter new category name (e.g. Mobile, Crypto, Rust)"
+                aria-label="New category name"
                 value={customCategory}
                 onChange={(e) => setCustomCategory(e.target.value)}
                 autoFocus
@@ -247,6 +259,7 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
               />
             ) : (
               <select
+                id="feed-category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="h-9 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-bg-secondary)] px-3 text-xs text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:bg-[var(--color-bg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"

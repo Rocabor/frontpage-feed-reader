@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { FeedSource } from '../types';
 import { parseOpml, generateOpml } from '../services/feedService';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 
 interface OpmlModalProps {
   isOpen: boolean;
@@ -35,6 +36,8 @@ export const OpmlModal: React.FC<OpmlModalProps> = ({
   } | null>(null);
 
   if (!isOpen) return null;
+
+  const dialogRef = useDialogFocus(isOpen, onClose);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -125,6 +128,11 @@ export const OpmlModal: React.FC<OpmlModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="opml-modal-title"
+        tabIndex={-1}
         className="relative w-full max-w-xl rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-2xl transition-all"
         onClick={(e) => e.stopPropagation()}
       >
@@ -135,7 +143,7 @@ export const OpmlModal: React.FC<OpmlModalProps> = ({
               <FileCode className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-[var(--color-text-primary)]">
+              <h2 id="opml-modal-title" className="text-base font-semibold text-[var(--color-text-primary)]">
                 OPML Feed Manager
               </h2>
               <p className="text-xs text-[var(--color-text-secondary)]">
@@ -145,6 +153,7 @@ export const OpmlModal: React.FC<OpmlModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close OPML feed manager"
             className="rounded-md p-1.5 text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
           >
             <X className="h-4 w-4" />
@@ -197,6 +206,7 @@ export const OpmlModal: React.FC<OpmlModalProps> = ({
         {/* Status Message */}
         {statusMessage && (
           <div
+            role={statusMessage.type === 'success' ? 'status' : 'alert'}
             className={`mt-4 flex items-center gap-2 rounded-lg p-3 text-xs ${
               statusMessage.type === 'success'
                 ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300'
@@ -239,10 +249,11 @@ export const OpmlModal: React.FC<OpmlModalProps> = ({
 
               {/* Paste Raw OPML */}
               <div>
-                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+                <label htmlFor="opml-paste" className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
                   Or paste OPML XML content
                 </label>
                 <textarea
+                  id="opml-paste"
                   rows={4}
                   placeholder={`<opml version="2.0">\n  <body>\n    <outline type="rss" xmlUrl="..." title="..." />\n  </body>\n</opml>`}
                   value={pastedXml}

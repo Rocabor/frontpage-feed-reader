@@ -12,6 +12,7 @@ import {
   Check,
 } from 'lucide-react';
 import { FeedSource } from '../types';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 
 interface ManageFeedsModalProps {
   isOpen: boolean;
@@ -40,6 +41,8 @@ export const ManageFeedsModal: React.FC<ManageFeedsModalProps> = ({
 
   if (!isOpen) return null;
 
+  const dialogRef = useDialogFocus(isOpen, onClose);
+
   const handleRefreshSingle = async (feedId: string) => {
     setRefreshingId(feedId);
     try {
@@ -55,6 +58,11 @@ export const ManageFeedsModal: React.FC<ManageFeedsModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs"
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="manage-feeds-modal-title"
+        tabIndex={-1}
         className="relative flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl transition-all"
         onClick={(e) => e.stopPropagation()}
       >
@@ -65,7 +73,7 @@ export const ManageFeedsModal: React.FC<ManageFeedsModalProps> = ({
               <Rss className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold text-[var(--color-text-primary)]">
+              <h2 id="manage-feeds-modal-title" className="text-base font-semibold text-[var(--color-text-primary)]">
                 Manage Subscriptions
               </h2>
               <p className="text-xs text-[var(--color-text-secondary)]">
@@ -75,6 +83,7 @@ export const ManageFeedsModal: React.FC<ManageFeedsModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Close Manage Subscriptions dialog"
             className="rounded-md p-1.5 text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
           >
             <X className="h-4 w-4" />

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import DOMPurify from 'dompurify';
 import {
   X,
   ExternalLink,
@@ -13,6 +14,7 @@ import {
   Minimize2,
 } from 'lucide-react';
 import { Article } from '../types';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 
 interface ArticleModalProps {
   article: Article | null;
@@ -31,22 +33,26 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
   const [fontSize, setFontSize] = useState<'sm' | 'base' | 'lg'>('base');
   const [fontFamily, setFontFamily] = useState<'sans' | 'serif' | 'mono'>('sans');
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  const dialogRef = useDialogFocus(Boolean(article), onClose);
 
   if (!article) return null;
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(article.link);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const sanitizedContent = useMemo(
+    () =>
+      DOMPurify.sanitize(article.content || '', {
+        ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+      }),
+    [article.content]
+  );
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(article.link);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard unavailable or permission denied: leave the UI unchanged.
+    }
   };
 
   const fontClasses = {
@@ -67,6 +73,11 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 backdrop-blur-xs sm:p-6"
     >
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="article-modal-title"
+        tabIndex={-1}
         className="relative flex h-full max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-2xl transition-all"
         onClick={(e) => e.stopPropagation()}
       >
@@ -173,6 +184,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             <button
               id="reader-close-btn"
               title="Close reader (Esc)"
+              aria-label="Close article"
               onClick={onClose}
               className="flex h-8 w-8 items-center justify-center rounded-md text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
             >
@@ -197,7 +209,10 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
             </div>
 
             {/* Article Headline */}
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-3xl leading-tight">
+            <h1
+              id="article-modal-title"
+              className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-3xl leading-tight"
+            >
               {article.title}
             </h1>
 
@@ -223,7 +238,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({
               {article.content ? (
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: article.content,
+                    __html: sanitizedContent,
                   }}
                   className="reader-html-content space-y-4 leading-relaxed [&_p]:mb-4 [&_a]:text-[var(--color-accent)] [&_a]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_pre]:bg-[var(--color-bg-tertiary)] [&_pre]:p-4 [&_pre]:rounded-lg [&_code]:bg-[var(--color-bg-tertiary)] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded"
                 />
