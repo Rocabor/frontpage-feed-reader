@@ -194,13 +194,18 @@ export const FeedView: React.FC<FeedViewProps> = ({
                   </div>
 
                   {/* Title */}
-                  <h3
-                    className={`mt-2 text-sm font-semibold leading-snug tracking-tight text-[var(--color-text-primary)] line-clamp-2 ${
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectArticle(article);
+                    }}
+                    className={`mt-2 cursor-pointer text-left text-sm font-semibold leading-snug tracking-tight text-[var(--color-text-primary)] line-clamp-2 transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] ${
                       article.isRead ? 'font-medium text-[var(--color-text-secondary)]' : ''
                     }`}
                   >
                     {article.title}
-                  </h3>
+                  </button>
 
                   {/* Snippet */}
                   {article.contentSnippet && (
@@ -274,13 +279,18 @@ export const FeedView: React.FC<FeedViewProps> = ({
                   </span>
 
                   {/* Title */}
-                  <span
-                    className={`truncate text-xs text-[var(--color-text-primary)] ${
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectArticle(article);
+                    }}
+                    className={`truncate cursor-pointer text-left text-xs text-[var(--color-text-primary)] transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] ${
                       article.isRead ? 'font-normal text-[var(--color-text-secondary)]' : 'font-semibold'
                     }`}
                   >
                     {article.title}
-                  </span>
+                  </button>
                 </div>
 
                 <div className="flex shrink-0 items-center gap-3 text-xs text-[var(--color-text-tertiary)]">
@@ -357,13 +367,18 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       <span>{article.pubDate ? new Date(article.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}</span>
                     </div>
 
-                    <h2
-                      className={`mt-2 font-serif text-lg font-bold tracking-tight text-[var(--color-text-primary)] transition-colors group-hover:text-[var(--color-accent)] sm:text-xl ${
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectArticle(article);
+                      }}
+                      className={`mt-2 cursor-pointer text-left font-serif text-lg font-bold tracking-tight text-[var(--color-text-primary)] transition-colors group-hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] sm:text-xl ${
                         article.isRead ? 'text-[var(--color-text-secondary)] font-normal' : ''
                       }`}
                     >
                       {article.title}
-                    </h2>
+                    </button>
 
                     {article.contentSnippet && (
                       <p className="mt-3 text-xs leading-relaxed text-[var(--color-text-secondary)] line-clamp-3">

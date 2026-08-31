@@ -66,8 +66,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   // Track open/collapsed state of each category
   const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
 
-  const toggleCategoryCollapse = (cat: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const toggleCategoryCollapse = (cat: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setCollapsedCategories((prev) => ({
       ...prev,
       [cat]: !prev[cat],
@@ -294,41 +294,50 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div key={category} className="space-y-0.5">
                 {/* Category Header */}
                 <div
-                  id={`cat-item-${category.replace(/\s+/g, '-').toLowerCase()}`}
-                  onClick={() => {
-                    onSelectFilter('all');
-                    onSelectCategory(category);
-                    onSelectFeed(null);
-                    onCloseMobile?.();
-                  }}
-                  className={`group flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-xs font-medium transition-colors ${
+                  className={`group flex cursor-pointer items-center rounded-md ${
                     isCatSelected
-                      ? 'bg-[var(--color-accent-subtle)] text-[var(--color-accent)] font-semibold'
-                      : 'text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)]'
+                      ? 'bg-[var(--color-accent-subtle)]'
+                      : 'hover:bg-[var(--color-bg-tertiary)]'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 overflow-hidden">
-                    <button
-                      onClick={(e) => toggleCategoryCollapse(category, e)}
-                      className="p-0.5 text-[var(--color-text-tertiary)] hover:text-[var(--color-text-primary)]"
-                    >
-                      {isCollapsed ? (
-                        <ChevronRight className="h-3.5 w-3.5" />
-                      ) : (
-                        <ChevronDown className="h-3.5 w-3.5" />
-                      )}
-                    </button>
+                  {/* Collapse / Expand toggle (separate control, keyboard operable) */}
+                  <button
+                    type="button"
+                    id={`cat-toggle-${category.replace(/\s+/g, '-').toLowerCase()}`}
+                    onClick={() => toggleCategoryCollapse(category)}
+                    aria-expanded={!isCollapsed}
+                    aria-label={isCollapsed ? `Expand ${category}` : `Collapse ${category}`}
+                    className="flex h-7 w-6 shrink-0 items-center justify-center rounded-md px-0.5 text-[var(--color-text-tertiary)] transition-colors hover:text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--color-accent)]"
+                  >
+                    {isCollapsed ? (
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    ) : (
+                      <ChevronDown className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+
+                  {/* Select category (real button, keyboard + focus friendly) */}
+                  <button
+                    type="button"
+                    id={`cat-item-${category.replace(/\s+/g, '-').toLowerCase()}`}
+                    onClick={() => {
+                      onSelectFilter('all');
+                      onSelectCategory(category);
+                      onSelectFeed(null);
+                      onCloseMobile?.();
+                    }}
+                    className="flex flex-1 cursor-pointer items-center gap-1.5 overflow-hidden rounded-md px-1.5 py-1.5 text-left text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--color-accent)]"
+                    style={isCatSelected ? { color: 'var(--color-accent)', fontWeight: 600 } : undefined}
+                  >
                     <Folder className="h-3.5 w-3.5 shrink-0 text-[var(--color-text-secondary)]" />
                     <span className="truncate">{category}</span>
-                  </div>
 
-                  <div className="flex items-center gap-1">
                     {catUnread > 0 && (
-                      <span className="rounded-full bg-[var(--color-border)] px-1.5 py-0.2 text-[10px] font-medium text-[var(--color-text-secondary)]">
+                      <span className="ml-auto shrink-0 rounded-full bg-[var(--color-border)] px-1.5 py-0.2 text-[10px] font-medium text-[var(--color-text-secondary)]">
                         {catUnread}
                       </span>
                     )}
-                  </div>
+                  </button>
                 </div>
 
                 {/* Feed Items inside Category */}

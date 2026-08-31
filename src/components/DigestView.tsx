@@ -86,9 +86,16 @@ export const DigestView: React.FC<DigestViewProps> = ({
                             <span>{article.readTimeMinutes || 3}m</span>
                           </div>
 
-                          <h3 className="mt-2 text-xs font-semibold text-[var(--color-text-primary)] line-clamp-2 group-hover:text-[var(--color-accent)]">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectArticle(article);
+                            }}
+                            className="mt-2 cursor-pointer text-left text-xs font-semibold text-[var(--color-text-primary)] line-clamp-2 transition-colors group-hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
+                          >
                             {article.title}
-                          </h3>
+                          </button>
 
                           {article.contentSnippet && (
                             <p className="mt-2 text-[11px] text-[var(--color-text-secondary)] line-clamp-3 leading-relaxed">
