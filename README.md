@@ -2,8 +2,8 @@
 
 A customizable, high-performance content aggregator that pulls live RSS and Atom feeds into a focused, distraction-free reading dashboard.
 
-**Live URL:** [https://frontpage-feedreader.vercel.app/](https://ais-pre-ghp5dl76vhztv6rtyti3ge-161844079463.us-east1.run.app)  
-**Repository:** [https://github.com/Rocabor/frontpage-feed-reader](https://github.com/Rocabor/frontpage-feed-reader)
+**Live URL:** [https://frontpage-feedreader.vercel.app](https://frontpage-feedreader.vercel.app/)  
+
 
 ![Frontpage Solution Preview](https://snipboard.io/lNyd5m.jpg)
 
