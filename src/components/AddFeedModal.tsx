@@ -53,9 +53,9 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
     itemCount: number;
   } | null>(null);
 
-  if (!isOpen) return null;
-
   const dialogRef = useDialogFocus(isOpen, onClose);
+
+  if (!isOpen) return null;
 
   const handleValidateUrl = async (urlToTest?: string) => {
     const url = (urlToTest || feedUrl).trim();

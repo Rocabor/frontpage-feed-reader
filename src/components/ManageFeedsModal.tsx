@@ -39,9 +39,9 @@ export const ManageFeedsModal: React.FC<ManageFeedsModalProps> = ({
   const [targetCategory, setTargetCategory] = useState<string>('');
   const [refreshingId, setRefreshingId] = useState<string | null>(null);
 
-  if (!isOpen) return null;
-
   const dialogRef = useDialogFocus(isOpen, onClose);
+
+  if (!isOpen) return null;
 
   const handleRefreshSingle = async (feedId: string) => {
     setRefreshingId(feedId);

@@ -35,9 +35,9 @@ export const OpmlModal: React.FC<OpmlModalProps> = ({
     text: string;
   } | null>(null);
 
-  if (!isOpen) return null;
-
   const dialogRef = useDialogFocus(isOpen, onClose);
+
+  if (!isOpen) return null;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
