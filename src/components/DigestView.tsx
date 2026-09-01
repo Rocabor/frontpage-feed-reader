@@ -25,7 +25,7 @@ export const DigestView: React.FC<DigestViewProps> = ({
   });
 
   return (
-    <div id="digest-view" className="flex flex-1 flex-col overflow-y-auto">
+    <main id="digest-view" className="flex flex-1 flex-col overflow-y-auto">
       <div className="flex-1 p-6 sm:p-10">
         <div className="mx-auto max-w-4xl space-y-8">
           {/* Digest Hero Header */}
@@ -129,6 +129,6 @@ export const DigestView: React.FC<DigestViewProps> = ({
       </div>
 
       <Footer />
-    </div>
+    </main>
   );
 };

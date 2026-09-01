@@ -80,7 +80,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
   const isLoadingInitial = isLoading && articles.length === 0;
 
   return (
-    <div
+    <main
       id="feed-view-container"
       aria-busy={isLoadingInitial ? true : undefined}
       className="flex flex-1 flex-col overflow-y-auto"
@@ -141,9 +141,9 @@ export const FeedView: React.FC<FeedViewProps> = ({
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-bg-tertiary)] text-[var(--color-text-tertiary)]">
               <Inbox className="h-6 w-6" />
             </div>
-            <h3 className="mt-3 text-sm font-semibold text-[var(--color-text-primary)]">
+            <h2 className="mt-3 text-sm font-semibold text-[var(--color-text-primary)]">
               No articles found
-            </h3>
+            </h2>
             <p className="mt-1 max-w-sm text-xs text-[var(--color-text-secondary)]">
               {searchQuery
                 ? 'Try tweaking your search keywords or clear the search filter.'
@@ -427,6 +427,6 @@ export const FeedView: React.FC<FeedViewProps> = ({
       </div>
 
       <Footer />
-    </div>
+    </main>
   );
 };

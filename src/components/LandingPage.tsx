@@ -75,9 +75,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterGuestMode, feed
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-accent-subtle)] text-[var(--color-accent)]">
                 <Layers className="h-5 w-5" />
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-[var(--color-text-primary)]">
+              <h2 className="mt-4 text-sm font-semibold text-[var(--color-text-primary)]">
                 19 Curated Tech Feeds
-              </h3>
+              </h2>
               <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
                 Pre-populated across Frontend, Design, Backend & DevOps, General Tech, and AI & ML with real live RSS/Atom parsing.
               </p>
@@ -87,9 +87,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterGuestMode, feed
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 <LayoutGrid className="h-5 w-5" />
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-[var(--color-text-primary)]">
+              <h2 className="mt-4 text-sm font-semibold text-[var(--color-text-primary)]">
                 3 Adaptive View Layouts
-              </h3>
+              </h2>
               <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
                 Switch smoothly between Card Grid, Compact Scan rows, and Editorial Magazine layouts to match your reading mood.
               </p>
@@ -99,9 +99,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnterGuestMode, feed
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400">
                 <FileCode className="h-5 w-5" />
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-[var(--color-text-primary)]">
+              <h2 className="mt-4 text-sm font-semibold text-[var(--color-text-primary)]">
                 OPML 2.0 Import & Export
-              </h3>
+              </h2>
               <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
                 Full compatibility with RSS readers (NetNewsWire, Feedly, Reeder) for easy import and export of your subscriptions.
               </p>
