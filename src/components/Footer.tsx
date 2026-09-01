@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
             href="https://www.frontendmentor.io?ref=challenge"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline transition-colors"
+            className="font-semibold text-emerald-700 dark:text-emerald-400 hover:underline transition-colors"
           >
             FrontendMentor
           </a>
@@ -30,7 +30,7 @@ export const Footer: React.FC = () => {
             href="https://www.frontendmentor.io/profile/Rocabor"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline transition-colors"
+            className="font-semibold text-emerald-700 dark:text-emerald-400 hover:underline transition-colors"
           >
             @Rocabor
           </a>

@@ -8,6 +8,8 @@
 @source "../index.html";
 
 @theme inline {
+  --breakpoint-xs: 24rem;
+
   --color-bg-primary: var(--color-bg-primary);
   --color-bg-secondary: var(--color-bg-secondary);
   --color-bg-tertiary: var(--color-bg-tertiary);
