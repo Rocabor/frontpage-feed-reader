@@ -181,6 +181,9 @@ pnpm run dev
 # Type-check the codebase
 pnpm run typecheck
 
+# Run the unit test suite (Vitest)
+pnpm test
+
 # Build for production
 pnpm run build
 

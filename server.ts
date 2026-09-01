@@ -62,7 +62,7 @@ function stripHtml(html?: string): string {
 
 const purify = createDOMPurify(new JSDOM('').window);
 
-function sanitizeHtml(html?: string): string {
+export function sanitizeHtml(html?: string): string {
   if (!html) return '';
   // Remove dangerous tags and attributes (script, event handlers, javascript: URIs, etc.)
   return purify.sanitize(html, {
@@ -72,7 +72,7 @@ function sanitizeHtml(html?: string): string {
 
 // isPrivateAddress: returns true when an IP should never be fetched server-side
 // (protects against SSRF toward internal services, cloud metadata, etc.).
-function isPrivateAddress(ip: string): boolean {
+export function isPrivateAddress(ip: string): boolean {
   // Normalize IPv4-mapped IPv6 (e.g. ::ffff:127.0.0.1 -> 127.0.0.1)
   const plain = ip.toLowerCase();
   const ipv4Mapped = plain.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
@@ -119,7 +119,7 @@ function isPrivateAddress(ip: string): boolean {
 
 // assertSafeFeedUrl validates that feedUrl can be fetched server-side without
 // enabling SSRF. Throws with a user-facing message when the target is unsafe.
-async function assertSafeFeedUrl(feedUrl: string): Promise<void> {
+export async function assertSafeFeedUrl(feedUrl: string): Promise<void> {
   let parsed: URL;
   try {
     parsed = new URL(feedUrl);
