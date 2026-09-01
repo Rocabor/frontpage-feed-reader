@@ -75,8 +75,7 @@ export const DigestView: React.FC<DigestViewProps> = ({
                     {catArticles.map((article) => (
                       <div
                         key={article.id}
-                        onClick={() => onSelectArticle(article)}
-                        className="group flex flex-col justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xs transition-all hover:border-[var(--color-accent)] hover:shadow-md cursor-pointer"
+                        className="group relative flex flex-col justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-xs transition-all hover:border-[var(--color-accent)] hover:shadow-md"
                       >
                         <div>
                           <div className="flex items-center justify-between text-[11px] text-[var(--color-text-tertiary)]">
@@ -88,11 +87,9 @@ export const DigestView: React.FC<DigestViewProps> = ({
 
                           <button
                             type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onSelectArticle(article);
-                            }}
-                            className="mt-2 cursor-pointer text-left text-xs font-semibold text-[var(--color-text-primary)] line-clamp-2 transition-colors group-hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
+                            onClick={() => onSelectArticle(article)}
+                            aria-label={`Open ${article.title}`}
+                            className="relative mt-2 cursor-pointer self-start text-left text-xs font-semibold text-[var(--color-text-primary)] line-clamp-2 transition-colors group-hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] after:absolute after:inset-0 after:content-['']"
                           >
                             {article.title}
                           </button>
@@ -112,7 +109,7 @@ export const DigestView: React.FC<DigestViewProps> = ({
 
                           <button
                             onClick={(e) => onToggleBookmark(article.id, e)}
-                            className="p-1 hover:text-amber-500"
+                            className="relative z-10 p-1 hover:text-amber-500"
                           >
                             <Bookmark
                               className={`h-3.5 w-3.5 ${

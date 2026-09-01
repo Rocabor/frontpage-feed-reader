@@ -150,8 +150,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
               <article
                 key={article.id}
                 id={`article-card-${article.id}`}
-                onClick={() => onSelectArticle(article)}
-                className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border bg-[var(--color-surface)] shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md cursor-pointer ${
+                className={`group relative flex flex-col justify-between overflow-hidden rounded-xl border bg-[var(--color-surface)] shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md ${
                   article.isRead
                     ? 'border-[var(--color-border-subtle)] opacity-75'
                     : 'border-[var(--color-border)]'
@@ -193,14 +192,12 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     )}
                   </div>
 
-                  {/* Title */}
+                  {/* Title (stretched link: covers the whole card) */}
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectArticle(article);
-                    }}
-                    className={`mt-2 cursor-pointer text-left text-sm font-semibold leading-snug tracking-tight text-[var(--color-text-primary)] line-clamp-2 transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] ${
+                    onClick={() => onSelectArticle(article)}
+                    aria-label={`Open ${article.title}`}
+                    className={`relative mt-2 cursor-pointer self-start text-left text-sm font-semibold leading-snug tracking-tight text-[var(--color-text-primary)] line-clamp-2 transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] after:absolute after:inset-0 after:content-[''] ${
                       article.isRead ? 'font-medium text-[var(--color-text-secondary)]' : ''
                     }`}
                   >
@@ -230,7 +227,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       <button
                         title={article.isRead ? 'Mark as unread' : 'Mark as read'}
                         onClick={(e) => onToggleRead(article.id, e)}
-                        className="flex h-7 w-7 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
+                        className="relative z-10 flex h-7 w-7 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
                       >
                         <Check className={`h-3.5 w-3.5 ${article.isRead ? 'text-[var(--color-success)]' : ''}`} />
                       </button>
@@ -239,7 +236,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                       <button
                         title={article.isBookmarked ? 'Remove bookmark' : 'Bookmark article'}
                         onClick={(e) => onToggleBookmark(article.id, e)}
-                        className="flex h-7 w-7 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-amber-500"
+                        className="relative z-10 flex h-7 w-7 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-tertiary)] hover:text-amber-500"
                       >
                         <Bookmark
                           className={`h-3.5 w-3.5 ${
@@ -260,8 +257,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
               <div
                 key={article.id}
                 id={`article-compact-${article.id}`}
-                onClick={() => onSelectArticle(article)}
-                className={`group flex cursor-pointer items-center justify-between gap-3 px-4 py-2.5 transition-colors hover:bg-[var(--color-bg-tertiary)]/50 ${
+                className={`group relative flex items-center justify-between gap-3 px-4 py-2.5 transition-colors hover:bg-[var(--color-bg-tertiary)]/50 ${
                   article.isRead ? 'opacity-70' : 'bg-[var(--color-surface)]'
                 }`}
               >
@@ -278,14 +274,12 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     {article.feedTitle}
                   </span>
 
-                  {/* Title */}
+                  {/* Title (stretched link: covers the whole row) */}
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectArticle(article);
-                    }}
-                    className={`truncate cursor-pointer text-left text-xs text-[var(--color-text-primary)] transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] ${
+                    onClick={() => onSelectArticle(article)}
+                    aria-label={`Open ${article.title}`}
+                    className={`relative truncate cursor-pointer self-start text-left text-xs text-[var(--color-text-primary)] transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] after:absolute after:inset-0 after:content-[''] ${
                       article.isRead ? 'font-normal text-[var(--color-text-secondary)]' : 'font-semibold'
                     }`}
                   >
@@ -303,7 +297,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     <button
                       title={article.isRead ? 'Mark as unread' : 'Mark as read'}
                       onClick={(e) => onToggleRead(article.id, e)}
-                      className="flex h-6 w-6 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)]"
+                      className="relative z-10 flex h-6 w-6 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-secondary)] hover:text-[var(--color-text-primary)]"
                     >
                       <Check className={`h-3 w-3 ${article.isRead ? 'text-[var(--color-success)]' : ''}`} />
                     </button>
@@ -311,7 +305,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     <button
                       title={article.isBookmarked ? 'Remove bookmark' : 'Bookmark'}
                       onClick={(e) => onToggleBookmark(article.id, e)}
-                      className="flex h-6 w-6 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-secondary)] hover:text-amber-500"
+                      className="relative z-10 flex h-6 w-6 items-center justify-center rounded text-[var(--color-text-tertiary)] hover:bg-[var(--color-bg-secondary)] hover:text-amber-500"
                     >
                       <Bookmark
                         className={`h-3 w-3 ${
@@ -331,8 +325,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
               <article
                 key={article.id}
                 id={`article-magazine-${article.id}`}
-                onClick={() => onSelectArticle(article)}
-                className={`group flex flex-col gap-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-xs transition-all hover:shadow-md cursor-pointer md:flex-row ${
+                className={`group relative flex flex-col gap-5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-xs transition-all hover:shadow-md md:flex-row ${
                   article.isRead ? 'opacity-75' : ''
                 }`}
               >
@@ -369,11 +362,9 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
                     <button
                       type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectArticle(article);
-                      }}
-                      className={`mt-2 cursor-pointer text-left font-serif text-lg font-bold tracking-tight text-[var(--color-text-primary)] transition-colors group-hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] sm:text-xl ${
+                      onClick={() => onSelectArticle(article)}
+                      aria-label={`Open ${article.title}`}
+                      className={`relative mt-2 cursor-pointer self-start text-left font-serif text-lg font-bold tracking-tight text-[var(--color-text-primary)] transition-colors group-hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] after:absolute after:inset-0 after:content-[''] sm:text-xl ${
                         article.isRead ? 'text-[var(--color-text-secondary)] font-normal' : ''
                       }`}
                     >
@@ -398,7 +389,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
                     <div className="flex items-center gap-2">
                       <button
                         onClick={(e) => onToggleRead(article.id, e)}
-                        className="flex items-center gap-1 rounded-md px-2 py-1 text-xs hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
+                        className="relative z-10 flex items-center gap-1 rounded-md px-2 py-1 text-xs hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-primary)]"
                       >
                         <Check className={`h-3.5 w-3.5 ${article.isRead ? 'text-[var(--color-success)]' : ''}`} />
                         <span>{article.isRead ? 'Read' : 'Mark read'}</span>
@@ -406,7 +397,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
                       <button
                         onClick={(e) => onToggleBookmark(article.id, e)}
-                        className="flex items-center gap-1 rounded-md px-2 py-1 text-xs hover:bg-[var(--color-bg-tertiary)] hover:text-amber-500"
+                        className="relative z-10 flex items-center gap-1 rounded-md px-2 py-1 text-xs hover:bg-[var(--color-bg-tertiary)] hover:text-amber-500"
                       >
                         <Bookmark
                           className={`h-3.5 w-3.5 ${
