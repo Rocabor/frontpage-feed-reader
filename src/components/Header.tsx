@@ -181,6 +181,8 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="layout-btn-cards"
                 title="Card Grid View"
+                aria-label="Card Grid View"
+                aria-pressed={layout === 'cards'}
                 onClick={() => onLayoutChange('cards')}
                 className={`flex h-7 w-7 items-center justify-center rounded transition-colors ${
                   layout === 'cards'
@@ -193,6 +195,8 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="layout-btn-compact"
                 title="Compact List View"
+                aria-label="Compact List View"
+                aria-pressed={layout === 'compact'}
                 onClick={() => onLayoutChange('compact')}
                 className={`flex h-7 w-7 items-center justify-center rounded transition-colors ${
                   layout === 'compact'
@@ -205,6 +209,8 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 id="layout-btn-magazine"
                 title="Magazine View"
+                aria-label="Magazine View"
+                aria-pressed={layout === 'magazine'}
                 onClick={() => onLayoutChange('magazine')}
                 className={`flex h-7 w-7 items-center justify-center rounded transition-colors ${
                   layout === 'magazine'

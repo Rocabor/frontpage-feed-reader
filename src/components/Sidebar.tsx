@@ -214,6 +214,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="grid grid-cols-3 gap-1.5">
             <button
               onClick={() => onLayoutChange('cards')}
+              aria-pressed={layout === 'cards'}
               className={`flex items-center justify-center gap-1 rounded py-1.5 text-xs font-medium transition-colors ${
                 layout === 'cards'
                   ? 'bg-[var(--color-accent)] text-white shadow-xs'
@@ -225,6 +226,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
             <button
               onClick={() => onLayoutChange('compact')}
+              aria-pressed={layout === 'compact'}
               className={`flex items-center justify-center gap-1 rounded py-1.5 text-xs font-medium transition-colors ${
                 layout === 'compact'
                   ? 'bg-[var(--color-accent)] text-white shadow-xs'
@@ -236,6 +238,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
             <button
               onClick={() => onLayoutChange('magazine')}
+              aria-pressed={layout === 'magazine'}
               className={`flex items-center justify-center gap-1 rounded py-1.5 text-xs font-medium transition-colors ${
                 layout === 'magazine'
                   ? 'bg-[var(--color-accent)] text-white shadow-xs'
