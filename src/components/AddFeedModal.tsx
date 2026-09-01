@@ -178,7 +178,13 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
                     setValidationError(null);
                   }}
                   required
-                  className="h-9 w-full rounded-md border border-[var(--color-border)] bg-[var(--color-bg-secondary)] pl-9 pr-3 text-xs text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:bg-[var(--color-bg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+                  aria-invalid={validationError ? true : undefined}
+                  aria-describedby={validationError ? 'feed-url-error' : undefined}
+                  className={`h-9 w-full rounded-md border bg-[var(--color-bg-secondary)] pl-9 pr-3 text-xs text-[var(--color-text-primary)] focus:outline-none focus:ring-1 ${
+                    validationError
+                      ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                      : 'border-[var(--color-border)] focus:border-[var(--color-accent)] focus:bg-[var(--color-bg-primary)] focus:ring-[var(--color-accent)]'
+                  }`}
                 />
               </div>
               <button
@@ -200,7 +206,11 @@ export const AddFeedModal: React.FC<AddFeedModalProps> = ({
 
             {/* Validation Feedback */}
             {validationError && (
-              <div role="alert" className="mt-2 flex items-start gap-1.5 text-xs text-red-500">
+              <div
+                id="feed-url-error"
+                role="alert"
+                className="mt-2 flex items-start gap-1.5 text-xs text-red-500"
+              >
                 <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                 <span>{validationError}</span>
               </div>
