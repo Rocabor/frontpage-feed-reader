@@ -77,8 +77,19 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
   const unreadInView = articles.filter((a) => !a.isRead).length;
 
+  const isLoadingInitial = isLoading && articles.length === 0;
+
   return (
-    <div id="feed-view-container" className="flex flex-1 flex-col overflow-y-auto">
+    <div
+      id="feed-view-container"
+      aria-busy={isLoadingInitial ? true : undefined}
+      className="flex flex-1 flex-col overflow-y-auto"
+    >
+      {isLoadingInitial && (
+        <p className="sr-only" role="status">
+          Loading articles
+        </p>
+      )}
       {/* Top Banner / Feed Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--color-border)] px-6 py-4 bg-[var(--color-bg-primary)]">
         <div>
@@ -117,7 +128,7 @@ export const FeedView: React.FC<FeedViewProps> = ({
 
       {/* Main Content Area */}
       <div className="flex-1 p-6">
-        {isLoading && articles.length === 0 ? (
+        {isLoadingInitial ? (
           /* Loading Skeleton (reserves space to avoid layout shift) */
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
