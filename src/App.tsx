@@ -23,6 +23,7 @@ import { OpmlModal } from './components/OpmlModal';
 import { DigestView } from './components/DigestView';
 import { ManageFeedsModal } from './components/ManageFeedsModal';
 import { LandingPage } from './components/LandingPage';
+import { useDialogFocus } from './hooks/useDialogFocus';
 
 export function App() {
   // Navigation & View State
@@ -46,6 +47,9 @@ export function App() {
   const [isOpmlOpen, setIsOpmlOpen] = useState(false);
   const [isManageFeedsOpen, setIsManageFeedsOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const mobileDrawerRef = useDialogFocus(isMobileSidebarOpen, () =>
+    setIsMobileSidebarOpen(false)
+  );
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(
     () => loadCachedArticles().length === 0 && loadSavedFeeds().length > 0
@@ -419,7 +423,12 @@ export function App() {
           >
             <div
               id="mobile-drawer-content"
-              className="h-full w-[18rem] max-w-[85vw] bg-[var(--color-bg-secondary)] shadow-2xl transition-transform"
+              ref={mobileDrawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+              tabIndex={-1}
+              className="h-full w-[18rem] max-w-[85vw] bg-[var(--color-bg-secondary)] shadow-2xl transition-transform focus:outline-none"
               onClick={(e) => e.stopPropagation()}
             >
               <Sidebar
